@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useAppSelector, useAppDispatch } from "./hooks/redux.hook";
+import { useState, useEffect } from "react";
+import { fetchTodos, addNewTodo } from "./store/todoSlice";
+import NewTodoForm from "./components/NewTodoForm";
+import TodoList from "./components/TodoList";
+import TodoFilters from "./components/TodoFilters";
+import "./App.css";
 
 function App() {
+  const [text, setText] = useState("");
+  const { loading, error } = useAppSelector((state) => state.todos);
+  const dispatch = useAppDispatch();
+
+  const handleAction = () => {
+    if (text.trim().length) {
+      dispatch(addNewTodo(text));
+      setText("");
+    }
+  };
+
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NewTodoForm
+        value={text}
+        updateText={setText}
+        handleAction={handleAction}
+      />
+      {loading && <h2>Loading...</h2>}
+      {error && <h2>An error occured: {error}</h2>}
+      <TodoFilters />
+
+      <TodoList />
     </div>
   );
 }
