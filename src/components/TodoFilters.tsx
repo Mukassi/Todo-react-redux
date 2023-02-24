@@ -3,7 +3,7 @@ import { changeFilter } from "../store/filtersSlice";
 
 type IFilters = string[];
 
-const filters: IFilters = ["All", "Favorite", "Completed"];
+const filters: IFilters = ["Все", "Избранные", "Завершенные"];
 
 const TodoFilters = () => {
   const dispatch = useAppDispatch();
@@ -12,14 +12,19 @@ const TodoFilters = () => {
     dispatch(changeFilter(name));
   };
   return (
-    <div className="controls">
-      <div className="filters">
+    <div className="filters-wrapper">
+
         {filters.map((filter) => (
-          <button key={filter} name={filter} onClick={onChangeFilter}>
+          <button
+            key={filter}
+            name={filter}
+            onClick={onChangeFilter}
+            className="filter-button"
+          >
             {filter}
           </button>
         ))}
-      </div>
+
     </div>
   );
 };

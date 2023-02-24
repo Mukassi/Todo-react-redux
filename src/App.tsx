@@ -24,15 +24,16 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Список задач</h1>
       <NewTodoForm
         value={text}
         updateText={setText}
         handleAction={handleAction}
       />
+
+      <TodoFilters />
       {loading && <h2>Loading...</h2>}
       {error && <h2>An error occured: {error}</h2>}
-      <TodoFilters />
-
       <TodoList />
     </div>
   );

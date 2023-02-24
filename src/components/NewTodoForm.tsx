@@ -10,13 +10,14 @@ const NewTodoForm: React.FC<INewTodoForm> = ({
   handleAction,
 }) => {
   return (
-    <label className="new-todo-input">
+    <label>
       <input
-        placeholder="new todo"
+        placeholder="Добавьте новую задачу"
         value={value}
         onChange={(e) => updateText(e.target.value)}
+        className="new-todo-input"
       />
-      <button onClick={handleAction}>Add todo</button>
+      <button onClick={handleAction}    className="todo-button">Добавить</button>
     </label>
   );
 };

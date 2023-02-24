@@ -19,6 +19,10 @@ type TodosState = {
   loading: boolean;
   error: string | null;
 };
+type EditTodo = {
+  id: string,
+  textInput: string
+}
 
 export const fetchTodos = createAsyncThunk<
   Todo[],
@@ -47,10 +51,10 @@ export const addNewTodo = createAsyncThunk<Todo, string>(
 );
 
 export const toggleCompleteStatus = createAsyncThunk<
-  Todo,
+  any,
   string,
   { state: { todos: TodosState } }
->("todos/toggleCompleteStatus", (id, { getState }): any => {
+>("todos/toggleCompleteStatus", (id, { getState }) => {
   const todo = getState().todos.todos.find((todo) => todo.id === id);
   if (todo) {
     const { request } = useHttp();
@@ -65,10 +69,10 @@ export const toggleCompleteStatus = createAsyncThunk<
 });
 
 export const toggleFavoriteStatus = createAsyncThunk<
-  Todo,
+  any,
   string,
   { state: { todos: TodosState } }
->("todos/toggleFavoriteStatus", (id, { getState }): any => {
+>("todos/toggleFavoriteStatus", (id, { getState }) => {
   const todo = getState().todos.todos.find((todo) => todo.id === id);
   if (todo) {
     const { request } = useHttp();
@@ -80,8 +84,27 @@ export const toggleFavoriteStatus = createAsyncThunk<
       })
     );
   }
-  return id;
 });
+
+export const editTodo = createAsyncThunk<
+  any,
+  EditTodo ,
+  { state: { todos: TodosState } }
+>("todos/edit", ({id, textInput}, { getState }) => {
+  const todo = getState().todos.todos.find((todo) => todo.id === id);
+  if (todo) {
+    const { request } = useHttp();
+    return request(
+      `https://63f608519daf59d1ad8071a2.mockapi.io/todos/${id}`,
+      "PUT",
+      JSON.stringify({
+        text: textInput,
+      })
+    );
+  }
+});
+
+
 export const deleteTodo = createAsyncThunk<
   string,
   string,
@@ -131,6 +154,14 @@ const todoSlice = createSlice({
         );
         if (toggledTodo) {
           toggledTodo.isFavorite = !toggledTodo.isFavorite;
+        }
+      })
+      .addCase(editTodo.fulfilled, (state, action) => {
+        const editTodo = state.todos.find(
+          (todo) => todo.id === action.payload.id
+        );
+        if (editTodo) {
+          editTodo.text = action.payload.text;
         }
       })
       .addCase(deleteTodo.fulfilled, (state, action) => {
