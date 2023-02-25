@@ -4,10 +4,19 @@ import { deleteTodo } from "../store/todoSlice";
 
 interface IDeleteModal {
   id: string;
+  date: number;
   setOpenModal: (value: boolean) => void;
+  text: string;
 }
 
-const DeleteModal: React.FC<IDeleteModal> = ({ id, setOpenModal }) => {
+const DeleteModal: React.FC<IDeleteModal> = ({
+  id,
+  setOpenModal,
+  text,
+  date,
+}) => {
+  const dateItem = new Date(date);
+  const stringDate = dateItem.toLocaleString();
   const dispatch = useAppDispatch();
   const modalRoot = document.getElementById("portal") as HTMLElement;
   return createPortal(
@@ -16,7 +25,11 @@ const DeleteModal: React.FC<IDeleteModal> = ({ id, setOpenModal }) => {
         <button className="modal-close" onClick={() => setOpenModal(false)}>
           &times;
         </button>
-        <h1>Вы уверены, что хотите удалить данную задачу?</h1>
+        <h1>Вы действительно хотите удалить задачу?</h1>
+        <div className="delete-descr">
+          <div>{text}</div>
+          <div>{stringDate}</div>
+        </div>
         <div>
           <button className="delete-button" onClick={() => setOpenModal(false)}>
             Отмена

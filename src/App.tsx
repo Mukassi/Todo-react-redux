@@ -4,19 +4,24 @@ import { fetchTodos, addNewTodo } from "./store/todoSlice";
 import NewTodoForm from "./components/NewTodoForm";
 import TodoList from "./components/TodoList";
 import TodoFilters from "./components/TodoFilters";
+import { Spinner } from "./components/Spinner/Spinner";
+
 import "./App.css";
 
 function App() {
   const [text, setText] = useState("");
   const { loading, error } = useAppSelector((state) => state.todos);
+
   const dispatch = useAppDispatch();
 
-  const handleAction = () => {
+  const onCreateNewTodo = () => {
     if (text.trim().length) {
       dispatch(addNewTodo(text));
       setText("");
     }
   };
+
+
 
   useEffect(() => {
     dispatch(fetchTodos());
@@ -28,11 +33,10 @@ function App() {
       <NewTodoForm
         value={text}
         updateText={setText}
-        handleAction={handleAction}
+        onCreateNewTodo={onCreateNewTodo}
       />
-
       <TodoFilters />
-      {loading && <h2>Loading...</h2>}
+      {loading && <Spinner/>}
       {error && <h2>An error occured: {error}</h2>}
       <TodoList />
     </div>

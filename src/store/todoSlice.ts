@@ -12,6 +12,7 @@ type Todo = {
   text: string;
   isCompleted: boolean;
   isFavorite: boolean;
+  Date: number;
 };
 
 type TodosState = {
@@ -20,9 +21,9 @@ type TodosState = {
   error: string | null;
 };
 type EditTodo = {
-  id: string,
-  textInput: string
-}
+  id: string;
+  textInput: string;
+};
 
 export const fetchTodos = createAsyncThunk<
   Todo[],
@@ -40,6 +41,7 @@ export const addNewTodo = createAsyncThunk<Todo, string>(
       text: text,
       isCompleted: false,
       isFavorite: false,
+      Date: Date.now(),
     };
     const { request } = useHttp();
     return request(
@@ -88,9 +90,9 @@ export const toggleFavoriteStatus = createAsyncThunk<
 
 export const editTodo = createAsyncThunk<
   any,
-  EditTodo ,
+  EditTodo,
   { state: { todos: TodosState } }
->("todos/edit", ({id, textInput}, { getState }) => {
+>("todos/edit", ({ id, textInput }, { getState }) => {
   const todo = getState().todos.todos.find((todo) => todo.id === id);
   if (todo) {
     const { request } = useHttp();
@@ -103,7 +105,6 @@ export const editTodo = createAsyncThunk<
     );
   }
 });
-
 
 export const deleteTodo = createAsyncThunk<
   string,
@@ -192,6 +193,9 @@ export const filtredTodos = createSelector(
     }
     if (filter === "Favorite") {
       return todos.filter((item) => item.isFavorite);
+    }
+    if (filter === "Process") {
+      return todos.filter((item) => !item.isCompleted);
     }
   }
 );
